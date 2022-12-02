@@ -3,15 +3,15 @@ import random
 import sys
 import time
 from datetime import datetime
+import argparse
 
-port = '5556'
-if len(sys.argv) > 1:
-    port =  sys.argv[1]
-    int(port)
+parser = argparse.ArgumentParser(description='Publish sensor messages')
+parser.add_argument('-p', '--port', type=int, required=True, help='port to publish messages on')
+args = parser.parse_args()
 
 context = zmq.Context()
 pub_socket = context.socket(zmq.PUB)
-pub_socket.bind(f'tcp://*:{port}')
+pub_socket.bind(f'tcp://*:{args.port}')
 
 try:
     while True:
