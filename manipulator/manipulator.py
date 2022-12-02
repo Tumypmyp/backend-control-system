@@ -2,7 +2,7 @@ import sys
 import socket
 import pickle
 
-port = 40000
+port = 5000
 if len(sys.argv) > 1:
     port = sys.argv[1]
 
@@ -13,7 +13,7 @@ conn, addr = s.accept()
 
 try:
     while True:
-        data = conn.recv(1024)
+        data = conn.recv(64)
         if not data:
             break
         message = pickle.loads(data)

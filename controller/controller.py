@@ -3,6 +3,12 @@ import zmq
 import threading
 import queue
 from datetime import datetime
+
+import socket
+import pickle
+
+
+manipulator_port = 5000
 port = '5556'
 if len(sys.argv) > 1:
     port =  sys.argv[1]
@@ -14,7 +20,6 @@ if len(sys.argv) > 2:
 context = zmq.Context()
 sub_socket = context.socket(zmq.SUB)
 
-print('Collecting updates from weather server...')
 sub_socket.connect(f'tcp://localhost:{port}')
 
 if len(sys.argv) > 2:
@@ -22,11 +27,9 @@ if len(sys.argv) > 2:
 
 sub_socket.setsockopt(zmq.SUBSCRIBE, b'')
 
-import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('', 40000))
+s.connect(('', manipulator_port))
 
-import pickle
 
 q = queue.Queue()
 
@@ -53,9 +56,11 @@ def worker():
 
 worker()
 
-while True:
-    message = sub_socket.recv_json()
-    print(message)
-    q.put(message)
-
-s.close()
+try:
+    while True:
+        message = sub_socket.recv_json()
+        print(message)
+        q.put(message)
+finally:
+    sub_socket.close()
+    s.close()
