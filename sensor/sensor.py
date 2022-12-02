@@ -6,7 +6,7 @@ from datetime import datetime
 import argparse
 
 parser = argparse.ArgumentParser(description='Publish sensor messages')
-parser.add_argument('-p', '--port', type=int, required=True, help='port to publish messages on')
+parser.add_argument('-p', '--port', type=int, default=5000, help='port to publish messages on (default: %(default)s)')
 args = parser.parse_args()
 
 context = zmq.Context()
