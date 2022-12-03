@@ -32,7 +32,7 @@ optional arguments:
 
 # Sensor
 
-Connects to the **Controller** via TCP to help it discover the sensor. Then posts generated messages as Publisher with ZeroMQ.
+Connects to the **Controller** via TCP to help it discover the sensor. Then posts generated messages as Publisher with ZeroMQ on port: `PORT`.
 
 ## Example
 ```
@@ -56,7 +56,7 @@ optional arguments:
 
 Connects to **Sensors** and **Manipulator**. Then every 5 seconds decides on the control signal for **Manipulator** using messages got after last decision.
 
-## Usage
+## Example
 
 ```
 $ python3 controller/controller.py -h
