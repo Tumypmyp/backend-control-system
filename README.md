@@ -39,14 +39,17 @@ Connects to the **Controller** via TCP to help it discover the sensor. Then post
 $ python3 sensor/sensor.py -h
 ```
 ```
-usage: sensor.py [-h] [-p PORT] -d DEST
+usage: sensor.py [-h] [-p PORT] -d DESTINATION [-t TIMES_PER_SECOND]
 
 Publish sensor messages
 
 optional arguments:
   -h, --help            show this help message and exit
   -p PORT, --port PORT  port to publish messages on (default: 5000)
-  -d DEST, --dest DEST  destination(controller) address (example: 0.0.0.0:30000)
+  -d DESTINATION, --destination DESTINATION
+                        destination(controller) address (example: 0.0.0.0:30000)
+  -t TIMES_PER_SECOND, --times-per-second TIMES_PER_SECOND
+                        number of times per second the sensor sends a message(default: 300)
 ```
 
 # Controller
