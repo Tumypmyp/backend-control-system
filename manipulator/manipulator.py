@@ -7,6 +7,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Proccess messages got from the controller')
 parser.add_argument('-p', '--port', type=int, default=10000, help='port to listen the tcp connection (default: %(default)s)')
 args = parser.parse_args()
+print(args)
 
 # Start TCP server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

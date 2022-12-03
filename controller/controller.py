@@ -8,9 +8,9 @@ import argparse
 # Parse command arguments
 parser = argparse.ArgumentParser(description='controller')
 parser.add_argument('-d', '--dest', required=True, help='manipulator(destination) address (example: 0.0.0.0:10000)')
-parser.add_argument('-p', '--port', type=int, default=30000, help='port to listen for new sensors (default: %(default)s)')
+parser.add_argument('-p', '--port', type=int, default=15000, help='port to listen for new sensors (default: %(default)s)')
 args = parser.parse_args()
-
+print(args)
 
 
 # Start Subscriber
@@ -54,7 +54,7 @@ sensors_thread.start()
 # Connect to manipulator
 dest_ip, dest_port = args.dest.split(':')
 send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-send_socket.settimeout(10)
+send_socket.settimeout(20)
 send_socket.connect((dest_ip, int(dest_port)))
 
 
