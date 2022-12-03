@@ -19,8 +19,9 @@ ip_address = socket.gethostbyname(hostname)
 print(ip_address)
 
 # Connect to controller
-send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 dest_ip, dest_port = args.dest.split(':')
+send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+send_socket.settimeout(20)
 send_socket.connect((dest_ip, int(dest_port)))
 
 # Send address for published messages

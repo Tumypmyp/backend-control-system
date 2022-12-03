@@ -2,7 +2,6 @@ import sys
 import zmq
 import threading
 import queue
-
 import socket
 import argparse
 
@@ -52,9 +51,10 @@ sensors_thread.start()
 
 
 
-
-send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# Connect to manipulator
 dest_ip, dest_port = args.dest.split(':')
+send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+send_socket.settimeout(10)
 send_socket.connect((dest_ip, int(dest_port)))
 
 
