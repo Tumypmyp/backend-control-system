@@ -9,7 +9,7 @@ def proccess_messages(queue, socket):
         m = queue.get()
         sum += m['payload']
         size += 1
-    print('Result:', sum, size)
+    print(f'Number of messages: {size}, Sum of payloads: {sum}')
     send_status(socket, 'up' if sum % 2 == 0 else 'down')
 
 

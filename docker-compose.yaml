@@ -20,7 +20,7 @@ services:
     tty: true
     volumes:
       - ./controller:/app
-    entrypoint: ["python3", "controller.py",  "-d",  "172.20.0.5", "-s", "172.20.0.3"]
+    entrypoint: ["python3", "controller.py",  "-d",  "172.20.0.5:10000", "-p", "30000"]
     networks:
       network:
         ipv4_address: 172.20.0.2
@@ -32,7 +32,7 @@ services:
     tty: true
     volumes:
       - ./sensor:/app
-    entrypoint: ["python3", "sensor.py", "-p", "5000"]
+    entrypoint: ["python3", "sensor.py", "-d",  "172.20.0.2:30000", "-p", "5000"]
     networks:
       network:
         ipv4_address: 172.20.0.3
