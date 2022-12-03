@@ -13,6 +13,7 @@ args = parser.parse_args()
 print(args)
 
 
+
 # Start Subscriber
 context = zmq.Context()
 sub_socket = context.socket(zmq.SUB)
@@ -20,39 +21,21 @@ sub_socket.setsockopt(zmq.SUBSCRIBE, b'')
 
 
 
-
+# Start discovering sensors
 discover_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 discover_socket.bind(('', args.port))
 discover_socket.listen()
 
-def add_sensors(discover_socket, sub_socket): 
-    try:
-        while True:
-            conn, addr = discover_socket.accept()
-            try:
-                while True:
-                    data = conn.recv(128)
-                    if not data:
-                        break
-                    address = str(data, 'utf-8')
-                    sub_socket.connect('tcp://' + address)
-
-
-            finally:
-                conn.close()
-    finally:
-        discover_socket.close()
-
-sensors_thread = threading.Thread(target=add_sensors, args=(discover_socket, sub_socket))
+# Run discovering in new thread
+import discoverer 
+sensors_thread = threading.Thread(target=discoverer.add_sensors, args=(discover_socket, sub_socket))
 sensors_thread.start()
 
 
 
-
-
+dest_ip, dest_port = args.dest.split(':')
 
 # Connect to manipulator
-dest_ip, dest_port = args.dest.split(':')
 send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 send_socket.settimeout(20)
 send_socket.connect((dest_ip, int(dest_port)))
@@ -62,6 +45,7 @@ send_socket.connect((dest_ip, int(dest_port)))
 import sender
 q = queue.Queue()
 
+# Run worker every 5 seconds in new threads
 def worker():
     threading.Timer(5.0, worker).start()
     global q
@@ -70,6 +54,7 @@ def worker():
 
 worker()
 
+# Recieve messages from sensors
 try:
     while True:
         message = sub_socket.recv_json()

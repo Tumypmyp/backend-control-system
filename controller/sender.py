@@ -1,7 +1,7 @@
 import pickle
 from datetime import datetime
 
-
+# Count messages and sent the control signal
 def proccess_messages(queue, socket):
     sum = 0
     size = 0
@@ -13,6 +13,7 @@ def proccess_messages(queue, socket):
     send_status(socket, 'up' if sum % 2 == 0 else 'down')
 
 
+# send the control signal
 def send_status(socket, status):
     dt = datetime.now().strftime('%Y%m%dT%H%M')
     result = {'datetime': dt, 'Status': status}
