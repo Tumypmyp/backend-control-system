@@ -22,22 +22,22 @@ print("ip:", ip_address)
 
 dest_ip, dest_port = args.destination.split(':')
 
-# Connect to controller
+def share_publisher_address(destination, ip_address, port):
+    # Connect to controller
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    while True:
+        try:
+            s.connect(destination)
+            print('connection successful')
+            break
+        except socket.error:
+            time.sleep(1)
 
-send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-connected = False
-while not connected:
-    # attempt to reconnect, otherwise sleep for 2 seconds
-    try:
-        send_socket.connect((dest_ip, int(dest_port)))
-        connected = True
-        print('connection successful')
-    except socket.error:
-        time.sleep(1)
+    # Send address for published messages
+    s.sendall(bytes(f'{ip_address}:{port}', 'utf-8'))
+    s.close()
 
-# Send address for published messages
-send_socket.sendall(bytes(f'{ip_address}:{args.port}', 'utf-8'))
-send_socket.close()
+share_publisher_address((dest_ip, int(dest_port)), ip_address, args.port)
 
 # Start Publisher 
 context = zmq.Context()

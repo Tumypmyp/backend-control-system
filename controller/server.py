@@ -1,6 +1,6 @@
 from flask import Flask
 
-
+# Serve a flask server
 def serve(status, server_port):
     app = Flask(__name__)
 
