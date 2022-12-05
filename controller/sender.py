@@ -13,7 +13,7 @@ def proccess_messages(queue, socket, status):
     send_status(socket, 'up' if sum % 2 == 0 else 'down', status)
 
 
-# send the control signal
+# Send the control signal
 def send_status(socket, status, server_status):
     dt = datetime.now().strftime('%Y%m%dT%H%M')
     result = {'datetime': dt, 'Status': status}

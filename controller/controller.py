@@ -22,25 +22,17 @@ sub_socket = context.socket(zmq.SUB)
 sub_socket.setsockopt(zmq.SUBSCRIBE, b'')
 
 
-
-# Start discovering sensors
-discover_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-discover_socket.bind(('0.0.0.0', args.port))
-discover_socket.listen()
-
 # Run discovering in new thread
-import discoverer 
-# discoverer.add_sensors(discover_socket, sub_socket)
-sensors_thread = threading.Thread(target=discoverer.add_sensors, args=(discover_socket, sub_socket))
+import discoverer
+sensors_thread = threading.Thread(target=discoverer.discover_sensors, args=(args.port, sub_socket, ))
 sensors_thread.start()
-
 
 
 dest_ip, dest_port = args.destination.split(':')
 
 # Connect to manipulator
 send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-send_socket.settimeout(20)
+send_socket.settimeout(10)
 send_socket.connect((dest_ip, int(dest_port)))
 
 

@@ -20,11 +20,20 @@ hostname = socket.gethostname()
 ip_address = socket.gethostbyname(hostname) 
 print("ip:", ip_address)
 
-# Connect to controller
 dest_ip, dest_port = args.destination.split(':')
+
+# Connect to controller
+
 send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-send_socket.settimeout(20)
-send_socket.connect((dest_ip, int(dest_port)))
+connected = False
+while not connected:
+    # attempt to reconnect, otherwise sleep for 2 seconds
+    try:
+        send_socket.connect((dest_ip, int(dest_port)))
+        connected = True
+        print('connection successful')
+    except socket.error:
+        time.sleep(1)
 
 # Send address for published messages
 send_socket.sendall(bytes(f'{ip_address}:{args.port}', 'utf-8'))
@@ -36,7 +45,6 @@ pub_socket = context.socket(zmq.PUB)
 pub_socket.bind(f'tcp://*:{args.port}')
 
 
-# print(1 / args.times_per_second)
 try:
     while True:
         # Generate data
