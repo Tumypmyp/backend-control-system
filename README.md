@@ -1,26 +1,36 @@
-# Backend controller
+# Backend control system
 
-There are 3 types of components:
-- Manipulator
-- Controller
-- Sensor
+In a control system exists 3 types of components:
+- *Manipulator*
+- *Controller*
+- *Sensor*
 
-This package defines the comunication between them.
+This package defines the network comunication between them.
 
+# Installation
 
-# Testing
-
-To test all components run `docker compose up`
-
-# Manipulator
-
-This component is only listening to **Controller**'s messages on TCP connection.
-
-You can specify port for accepting the TCP connection.
-
-## Usage
 ```
-$ python3 manipulator/manipulator.py -h
+git clone https://github.com/Tumypmyp/backend-control-system
+cd backend-control-system/
+```
+# Run
+
+To run all components:
+```
+docker compose up
+```
+
+# Components
+
+All components use `python` scripts to communicate.
+
+## Manipulator
+
+This component is listening to *Controller*'s messages on TCP connection and prints them to logs.
+
+### Usage
+```
+python3 manipulator/manipulator.py -h
 ```
 ```
 usage: manipulator.py [-h] [-p PORT]
@@ -32,15 +42,24 @@ optional arguments:
   -p PORT, --port PORT  port to listen the tcp connection (default: 10000)
 ```
 
-# Sensor
+## Sensor
 
-Connects to the **Controller** via TCP to help it discover the sensor's publisher address. Then posts randomly generated messages 300 times per second. 
+Connects to the *Controller* via TCP to send his Publisher address. Then post randomly generated messages 300 times per second using this address.
 
-Sensor acts as Publisher in PUB/SUB pattern in ZeroMQ.
+*Sensor* acts as a Publisher in PUB/SUB pattern in ZeroMQ.
 
-## Usage
+Signal messages published in `json` format:
+
 ```
-$ python3 sensor/sensor.py -h
+{
+ "datetime": "%Y%m%dT%H%M%S",
+ "payload": "int"
+}
+```
+
+### Usage
+```
+python3 sensor/sensor.py -h
 ```
 ```
 usage: sensor.py [-h] [-p PORT] -d DESTINATION [-t TIMES_PER_SECOND]
@@ -56,16 +75,25 @@ optional arguments:
                         number of times per second the sensor sends a message(default: 300)
 ```
 
-# Controller
+## Controller
 
-Connects to **Manipulator** and listens on multiple **Sensors**. Then every 5 seconds decides on the control signal for **Manipulator** using messages got after last decision.
+Connects to *Manipulator* and listens on multiple *Sensors*. Then every 5 seconds decides on the control signal for *Manipulator* using signals got after previous decision.
 
-Controller has a Flask server, on which the last control signal is served.
+*Controller* has a Flask server. The last control signal is served on `http://127.0.0.1:20000/status`
 
-## Usage
+Control messages published in `json` format: 
+```
+{
+ "datetime": "%Y%m%dT%H%M%S",
+ "status": "up" | "down"
+}
 
 ```
-$ python3 controller/controller.py -h
+
+### Usage
+
+```
+python3 controller/controller.py -h
 ```
 ```
 usage: controller.py [-h] -d DESTINATION [-p PORT]
