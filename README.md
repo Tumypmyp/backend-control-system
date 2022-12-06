@@ -5,6 +5,8 @@ There are 3 types of components:
 - Controller
 - Sensor
 
+This package defines the comunication between them.
+
 
 # Testing
 
@@ -14,9 +16,9 @@ To test all components run `docker compose up`
 
 This component is only listening to **Controller**'s messages on TCP connection.
 
-You can specify the port for the TCP connection.
+You can specify port for accepting the TCP connection.
 
-## Example
+## Usage
 ```
 $ python3 manipulator/manipulator.py -h
 ```
@@ -32,9 +34,11 @@ optional arguments:
 
 # Sensor
 
-Connects to the **Controller** via TCP to help it discover the sensor. Then posts generated messages as Publisher with ZeroMQ on port: `PORT`.
+Connects to the **Controller** via TCP to help it discover the sensor's publisher address. Then posts randomly generated messages 300 times per second. 
 
-## Example
+Sensor acts as Publisher in PUB/SUB pattern in ZeroMQ.
+
+## Usage
 ```
 $ python3 sensor/sensor.py -h
 ```
@@ -54,20 +58,22 @@ optional arguments:
 
 # Controller
 
-Connects to **Sensors** and **Manipulator**. Then every 5 seconds decides on the control signal for **Manipulator** using messages got after last decision.
+Connects to **Manipulator** and listens on multiple **Sensors**. Then every 5 seconds decides on the control signal for **Manipulator** using messages got after last decision.
 
-## Example
+Controller has a Flask server, on which the last control signal is served.
+
+## Usage
 
 ```
 $ python3 controller/controller.py -h
 ```
 ```
-usage: controller.py [-h] -d DEST [-p PORT]
+usage: controller.py [-h] -d DESTINATION [-p PORT]
 
 controller
 
 optional arguments:
   -h, --help            show this help message and exit
-  -d DEST, --dest DEST  manipulator(destination) address (example: 0.0.0.0:10000)
+  -d DESTINATION, --destination DESTINATION  manipulator(destination) address (example: 0.0.0.0:10000)
   -p PORT, --port PORT  port to listen for new sensors (default: 30000)
 ```
